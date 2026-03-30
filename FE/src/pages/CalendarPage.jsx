@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { CalendarGrid } from '../components/calendar/CalendarGrid.jsx'
+import { EventForm } from '../components/event-form/EventForm.jsx'
 import { buildCalendarMonth, formatMonthLabel, formatSelectedDateLabel } from '../lib/date/calendar.js'
 
 const seededEvents = [
@@ -38,6 +39,7 @@ const monthAnchor = new Date('2026-03-01T09:00:00')
 
 export function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState(new Date('2026-03-30T09:00:00'))
+  const [draftPayload, setDraftPayload] = useState(null)
 
   const calendarDays = buildCalendarMonth(monthAnchor, seededEvents, selectedDate)
   const selectedEvents = seededEvents.filter(
@@ -101,6 +103,22 @@ export function CalendarPage() {
             ) : (
               <div className="detail-card__empty">No scheduled events on this date.</div>
             )}
+          </section>
+
+          <section className="panel composer-card" aria-label="event composer">
+            <div className="composer-card__header">
+              <h2 className="composer-card__title">Event Composer</h2>
+              <p className="composer-card__copy">
+                Shape the scheduling payload before wiring it to the backend API.
+              </p>
+            </div>
+            <EventForm onSubmit={setDraftPayload} />
+            {draftPayload ? (
+              <div className="composer-card__preview">
+                <p className="composer-card__preview-label">Draft payload ready</p>
+                <pre>{JSON.stringify(draftPayload, null, 2)}</pre>
+              </div>
+            ) : null}
           </section>
 
           <section className="panel feed-card" aria-label="execution feed">

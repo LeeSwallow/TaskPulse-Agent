@@ -15,6 +15,7 @@ describe('App shell', () => {
 
     expect(container.querySelector('[aria-label="calendar region"]')).not.toBeNull()
     expect(container.querySelector('[aria-label="detail panel"]')).not.toBeNull()
+    expect(container.querySelector('[aria-label="event composer"]')).not.toBeNull()
     expect(container.querySelector('[aria-label="execution feed"]')).not.toBeNull()
     expect(screen.getAllByRole('heading', { name: /monday, march 30/i }).length).toBeGreaterThan(0)
   })
