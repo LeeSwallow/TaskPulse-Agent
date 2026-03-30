@@ -2,20 +2,43 @@
 
 ## 목표
 
-프런트엔드는 사용자가 이벤트를 캘린더 기반으로 등록하고, 상태와 실행 결과를 확인하며, 수동 실행과 제어를 수행할 수 있는 운영 UI 를 제공한다.
+프런트엔드는 `TaskPulse Agent` 의 데스크톱 운영 UI 를 제공한다. 사용자는 이벤트를 캘린더 기반으로 등록하고, 상태와 실행 결과를 확인하며, 수동 실행과 제어를 수행할 수 있어야 한다.
 
 기술 스택:
 
 - `React`
 - `Vite`
+- `Electron`
+- `gRPC client` in Electron main process
+
+## 프로세스 구조
+
+### Renderer
+
+- React UI
+- 캘린더, 이벤트, 실행 결과 렌더링
+- preload API 만 사용
+
+### Preload
+
+- renderer 와 main process 사이의 안전한 브리지
+- typed IPC surface 제공
+
+### Main Process
+
+- gRPC backend client 소유
+- backend 와의 통신 담당
+- desktop notification, local config, window lifecycle 담당
 
 ## 핵심 화면
 
 ### 1. Calendar Page
 
+- workspace / agent selector
 - 월간 또는 주간 이벤트 조회
 - 날짜 클릭 시 해당 날짜 이벤트 리스트 표시
 - 이벤트 상태 배지 표시
+- 오늘 날짜, 선택 날짜, 예정 실행 수 표시
 
 ### 2. Event Composer
 
@@ -24,6 +47,7 @@
 - 실행 시각/반복 규칙 입력
 - 허용 tool 선택
 - notify target 선택
+- 생성/수정 공용 모드
 
 ### 3. Execution Feed
 
@@ -31,16 +55,30 @@
 - 성공/실패 상태
 - 요약 결과
 - 사용 tool 로그
+- 실행 시간 표시
 
-### 4. Event Detail Drawer or Panel
+### 4. Event Detail Panel
 
 - 이벤트 전체 설정 조회
 - 일시정지/재개/수정/삭제/수동 실행
 
-## 제안 디렉터리 구조
+## 사용자 계층
+
+- user 가 workspace 를 가진다
+- workspace 가 agent 를 가진다
+- agent 가 event 와 execution 을 가진다
+- UI 는 항상 현재 선택된 workspace 와 agent 컨텍스트 안에서 동작한다
+
+## 적용할 디렉터리 구조
 
 ```text
 FE/
+  electron/
+    main/
+      main.ts
+      grpc-client.ts
+    preload/
+      preload.ts
   src/
     app/
     pages/
@@ -49,63 +87,102 @@ FE/
       calendar/
       event-form/
       execution/
-      layout/
+      event-detail/
     features/
+      workspaces/
+      agents/
       events/
       executions/
       tools/
     lib/
-      api/
+      ipc/
+      contracts/
       date/
       constants/
-    styles/
     tests/
 ```
 
 ## 상태 관리 방향
 
 - 초기 MVP는 React 내장 상태와 feature 단위 custom hook 으로 시작한다.
-- 데이터 fetching 은 경량 wrapper 로 직접 구현하거나 이후 TanStack Query 도입을 검토한다.
+- renderer 는 Electron preload API 를 통해 main process 와 통신한다.
+- main process 가 gRPC backend client 를 소유한다.
 - 전역 상태는 최소화한다.
 
-## 주요 컴포넌트 초안
+## 상태 초안
 
-### Calendar Grid
+- `currentMonth: Date`
+- `selectedDate: Date`
+- `workspaces: Workspace[]`
+- `agents: Agent[]`
+- `selectedWorkspaceId: string | null`
+- `selectedAgentId: string | null`
+- `events: Event[]`
+- `executions: Execution[]`
+- `tools: ToolDefinition[]`
+- `selectedEventId: string | null`
+- `formMode: "create" | "edit"`
+- `loading/error` 상태
 
-- 월별 날짜 셀 렌더링
-- 날짜별 이벤트 개수와 제목 일부 노출
-- 선택 날짜 강조
+## 통신 초안
 
-### Event Form
+- renderer -> preload/ipc
+- preload -> Electron main process
+- Electron main -> backend gRPC
 
-- create/edit 모드 공용
-- 반복 규칙 타입에 따라 필드가 동적으로 바뀜
-- 허용 tool 멀티 선택 지원
+직접 HTTP fetch 를 기본 통신 계층으로 사용하지 않는다.
 
-### Execution List
+## FE 타입 계약 초안
 
-- 최신순 정렬
-- 상태 색상 표시
-- 요약과 로그 펼침 지원
+```ts
+type Workspace = {
+  id: string;
+  user_id: string;
+  name: string;
+  timezone: string;
+};
 
-## API 연동 초안
+type Agent = {
+  id: string;
+  workspace_id: string;
+  name: string;
+  description: string;
+  status: "active" | "paused";
+};
 
-- `GET /api/events`
-- `POST /api/events`
-- `PATCH /api/events/{event_id}`
-- `DELETE /api/events/{event_id}`
-- `POST /api/events/{event_id}/run`
-- `POST /api/events/{event_id}/pause`
-- `POST /api/events/{event_id}/resume`
-- `GET /api/executions`
-- `GET /api/tools`
+type Event = {
+  id: string;
+  agent_id: string;
+  title: string;
+  instruction: string;
+  schedule: {
+    type: "once" | "daily" | "weekly";
+    run_at?: string | null;
+    time_of_day?: string | null;
+    days_of_week: number[];
+    timezone: string;
+  };
+  allowed_tools: string[];
+  notify_target: string;
+  status: "active" | "paused";
+  last_run_at?: string | null;
+  next_run_at?: string | null;
+};
 
-## UX 원칙
-
-- 일정 정보는 한눈에 보여야 한다.
-- 등록 폼은 복잡하더라도 단계별로 이해 가능해야 한다.
-- 실행 결과는 운영 도구처럼 빠르게 스캔 가능해야 한다.
-- 실패 실행은 즉시 재실행 가능해야 한다.
+type Execution = {
+  id: string;
+  workspace_id: string;
+  agent_id: string;
+  event_id: string;
+  status: "pending" | "running" | "succeeded" | "failed";
+  started_at: string;
+  finished_at?: string | null;
+  summary?: string;
+  steps: string[];
+  tool_results: Array<Record<string, unknown>>;
+  error?: string | null;
+};
+```
 
 ## 테스트 전략
 
@@ -114,24 +191,20 @@ FE/
 - Calendar Grid 렌더링
 - Event Form 입력/검증
 - Execution List 상태 렌더링
+- Event Detail Panel 액션 표시
+- workspace / agent selector 동작
 
 ### 통합 테스트
 
 - 이벤트 생성 플로우
 - 이벤트 수정/일시정지 플로우
 - 수동 실행 버튼 동작
+- 초기 workspace/agent/event fetch 및 렌더링
 
 ### 회귀 테스트
 
+- preload contract test
+- ipc to grpc mapping test
+- workspace/agent selection regression test
 - 반복 규칙 폼 전환
 - API 실패 시 에러 표시
-- 날짜 선택 변경 시 상세 패널 동기화
-
-## 구현 우선순위
-
-1. 레이아웃과 기본 페이지 셸
-2. 이벤트 목록/캘린더 렌더링
-3. 이벤트 등록 폼
-4. 실행 결과 피드
-5. 이벤트 상세 제어 액션
-6. 에러/로딩 상태 정리

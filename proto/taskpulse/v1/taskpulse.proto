@@ -1,0 +1,186 @@
+syntax = "proto3";
+
+package taskpulse.v1;
+
+message HealthCheckRequest {}
+
+message HealthCheckResponse {
+  string status = 1;
+}
+
+message User {
+  string id = 1;
+  string display_name = 2;
+  string email = 3;
+  string role = 4;
+}
+
+message Workspace {
+  string id = 1;
+  string user_id = 2;
+  string name = 3;
+  string timezone = 4;
+}
+
+message Agent {
+  string id = 1;
+  string workspace_id = 2;
+  string name = 3;
+  string description = 4;
+  string status = 5;
+}
+
+message Schedule {
+  string type = 1;
+  string timezone = 2;
+  string run_at = 3;
+  string time_of_day = 4;
+  repeated int32 days_of_week = 5;
+}
+
+message Event {
+  string id = 1;
+  string agent_id = 2;
+  string title = 3;
+  string instruction = 4;
+  Schedule schedule = 5;
+  repeated string allowed_tools = 6;
+  string notify_target = 7;
+  string status = 8;
+  string created_at = 9;
+  string updated_at = 10;
+  string last_run_at = 11;
+  string next_run_at = 12;
+}
+
+message Execution {
+  string id = 1;
+  string workspace_id = 2;
+  string agent_id = 3;
+  string event_id = 4;
+  string status = 5;
+  string started_at = 6;
+  string finished_at = 7;
+  string summary = 8;
+  repeated string steps = 9;
+  repeated string tool_results_json = 10;
+  string error = 11;
+}
+
+message ToolDefinition {
+  string name = 1;
+  string description = 2;
+}
+
+message ListWorkspacesRequest {
+  string user_id = 1;
+}
+
+message ListWorkspacesResponse {
+  repeated Workspace workspaces = 1;
+}
+
+message ListAgentsRequest {
+  string workspace_id = 1;
+}
+
+message ListAgentsResponse {
+  repeated Agent agents = 1;
+}
+
+message ListEventsRequest {
+  string workspace_id = 1;
+  string agent_id = 2;
+}
+
+message CreateEventRequest {
+  string workspace_id = 1;
+  string agent_id = 2;
+  string title = 3;
+  string instruction = 4;
+  Schedule schedule = 5;
+  repeated string allowed_tools = 6;
+  string notify_target = 7;
+}
+
+message UpdateEventRequest {
+  string event_id = 1;
+  string title = 2;
+  string instruction = 3;
+  Schedule schedule = 4;
+  repeated string allowed_tools = 5;
+  string notify_target = 6;
+  string status = 7;
+}
+
+message DeleteEventRequest {
+  string event_id = 1;
+}
+
+message EventResponse {
+  Event event = 1;
+}
+
+message ListEventsResponse {
+  repeated Event events = 1;
+}
+
+message RunEventRequest {
+  string event_id = 1;
+}
+
+message PauseEventRequest {
+  string event_id = 1;
+}
+
+message ResumeEventRequest {
+  string event_id = 1;
+}
+
+message ListExecutionsRequest {
+  string workspace_id = 1;
+  string agent_id = 2;
+  string event_id = 3;
+}
+
+message ListExecutionsResponse {
+  repeated Execution executions = 1;
+}
+
+message ListToolsRequest {}
+
+message ListToolsResponse {
+  repeated ToolDefinition tools = 1;
+}
+
+message Empty {}
+
+service HealthService {
+  rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+service WorkspaceService {
+  rpc ListWorkspaces(ListWorkspacesRequest) returns (ListWorkspacesResponse);
+}
+
+service AgentService {
+  rpc ListAgents(ListAgentsRequest) returns (ListAgentsResponse);
+}
+
+service EventService {
+  rpc ListEvents(ListEventsRequest) returns (ListEventsResponse);
+  rpc CreateEvent(CreateEventRequest) returns (EventResponse);
+  rpc UpdateEvent(UpdateEventRequest) returns (EventResponse);
+  rpc DeleteEvent(DeleteEventRequest) returns (Empty);
+  rpc RunEvent(RunEventRequest) returns (Execution);
+  rpc PauseEvent(PauseEventRequest) returns (EventResponse);
+  rpc ResumeEvent(ResumeEventRequest) returns (EventResponse);
+}
+
+service ExecutionService {
+  rpc ListExecutions(ListExecutionsRequest) returns (ListExecutionsResponse);
+}
+
+service ToolService {
+  rpc ListTools(ListToolsRequest) returns (ListToolsResponse);
+}
