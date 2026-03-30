@@ -1,0 +1,69 @@
+{
+  "team": "backend",
+  "workflow": "GitHub Flow + TDD",
+  "tickets": [
+    {
+      "id": "BE-001",
+      "title": "Bootstrap FastAPI app and healthcheck",
+      "owner": "be-api-engineer",
+      "branch": "feature/be-healthcheck",
+      "status": "ready",
+      "path": "./tickets/BE-001-healthcheck.md",
+      "depends_on": []
+    },
+    {
+      "id": "BE-002",
+      "title": "Define event and schedule schemas",
+      "owner": "be-api-engineer",
+      "branch": "feature/be-event-schema",
+      "status": "ready",
+      "path": "./tickets/BE-002-event-schema.md",
+      "depends_on": ["BE-001"]
+    },
+    {
+      "id": "BE-003",
+      "title": "Implement event CRUD application and repository core",
+      "owner": "be-api-engineer",
+      "branch": "feature/be-event-crud",
+      "status": "ready",
+      "path": "./tickets/BE-003-event-crud.md",
+      "depends_on": ["BE-002"]
+    },
+    {
+      "id": "BE-004",
+      "title": "Implement gRPC contract and server bootstrap",
+      "owner": "be-api-engineer",
+      "branch": "feature/be-grpc-bootstrap",
+      "status": "ready",
+      "path": "./tickets/BE-004-grpc-bootstrap.md",
+      "depends_on": ["BE-002"]
+    },
+    {
+      "id": "BE-005",
+      "title": "Implement scheduler recurrence core",
+      "owner": "be-scheduler-agent-engineer",
+      "branch": "feature/be-scheduler-core",
+      "status": "ready",
+      "path": "./tickets/BE-005-scheduler-core.md",
+      "depends_on": ["BE-002", "BE-004"]
+    },
+    {
+      "id": "BE-006",
+      "title": "Implement LangGraph agent runner",
+      "owner": "be-scheduler-agent-engineer",
+      "branch": "feature/be-agent-runner",
+      "status": "ready",
+      "path": "./tickets/BE-006-agent-runner.md",
+      "depends_on": ["BE-003", "BE-005"]
+    },
+    {
+      "id": "BE-007",
+      "title": "Add structured logging and metrics",
+      "owner": "be-platform-observability-engineer",
+      "branch": "feature/be-structured-logging",
+      "status": "ready",
+      "path": "./tickets/BE-007-observability-bootstrap.md",
+      "depends_on": ["BE-005", "BE-006"]
+    }
+  ]
+}

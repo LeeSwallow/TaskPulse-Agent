@@ -1,0 +1,60 @@
+{
+  "team": "frontend",
+  "workflow": "GitHub Flow + TDD",
+  "tickets": [
+    {
+      "id": "FE-001",
+      "title": "Build Electron app shell and calendar page layout",
+      "owner": "fe-calendar-event-ux-engineer",
+      "branch": "feature/fe-app-shell",
+      "status": "ready",
+      "path": "./tickets/FE-001-app-shell.md",
+      "depends_on": []
+    },
+    {
+      "id": "FE-002",
+      "title": "Implement calendar grid and selected date interaction",
+      "owner": "fe-calendar-event-ux-engineer",
+      "branch": "feature/fe-calendar-grid",
+      "status": "ready",
+      "path": "./tickets/FE-002-calendar-grid.md",
+      "depends_on": ["FE-001"]
+    },
+    {
+      "id": "FE-003",
+      "title": "Implement event form for create and edit",
+      "owner": "fe-calendar-event-ux-engineer",
+      "branch": "feature/fe-event-form",
+      "status": "ready",
+      "path": "./tickets/FE-003-event-form.md",
+      "depends_on": ["FE-002"]
+    },
+    {
+      "id": "FE-004",
+      "title": "Add preload/ipc bridge and grpc client mapping",
+      "owner": "fe-quality-state-engineer",
+      "branch": "feature/fe-api-client",
+      "status": "ready",
+      "path": "./tickets/FE-004-api-client.md",
+      "depends_on": ["FE-001"]
+    },
+    {
+      "id": "FE-005",
+      "title": "Implement execution feed and event detail panel",
+      "owner": "fe-operations-ui-engineer",
+      "branch": "feature/fe-execution-feed",
+      "status": "ready",
+      "path": "./tickets/FE-005-execution-feed.md",
+      "depends_on": ["FE-002", "FE-004"]
+    },
+    {
+      "id": "FE-006",
+      "title": "Implement event actions and UI quality gate",
+      "owner": "fe-operations-ui-engineer",
+      "branch": "feature/fe-event-actions",
+      "status": "ready",
+      "path": "./tickets/FE-006-event-actions.md",
+      "depends_on": ["FE-003", "FE-004", "FE-005"]
+    }
+  ]
+}

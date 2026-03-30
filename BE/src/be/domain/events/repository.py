@@ -1,0 +1,16 @@
+from collections.abc import Sequence
+from typing import Protocol
+
+from be.domain.events.entities import Event
+
+
+class EventRepository(Protocol):
+    async def create(self, event: Event) -> Event: ...
+
+    async def list_events(self) -> Sequence[Event]: ...
+
+    async def get_by_id(self, event_id: str) -> Event | None: ...
+
+    async def update(self, event: Event) -> Event: ...
+
+    async def delete(self, event_id: str) -> None: ...

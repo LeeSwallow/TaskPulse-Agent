@@ -2,19 +2,29 @@
 
 ## 1. 기능 요구사항
 
+### FR-0 사용자 계층
+
+- 시스템은 `User -> Workspace -> Agent -> Event -> Execution` 소유 관계를 가져야 한다.
+- 모든 이벤트는 특정 agent 에 속해야 한다.
+- 모든 agent 는 특정 workspace 에 속해야 한다.
+- 모든 workspace 는 특정 user 에 속해야 한다.
+- MVP 는 단일 로컬 user 기준이어도, 스키마는 이 계층을 보존해야 한다.
+
 ### FR-1 이벤트 등록
 
 - 사용자는 이벤트 제목을 입력할 수 있어야 한다.
-- 사용자는 자연어 instruction을 입력할 수 있어야 한다.
+- 사용자는 자연어 instruction 을 입력할 수 있어야 한다.
 - 사용자는 실행 시각 또는 반복 규칙을 설정할 수 있어야 한다.
 - 사용자는 이벤트별 허용 tool/MCP 목록을 선택할 수 있어야 한다.
 - 사용자는 결과 통지 대상을 선택할 수 있어야 한다.
+- 이벤트 생성 시 현재 선택된 `workspace_id`, `agent_id` 가 함께 전달되어야 한다.
 
 ### FR-2 캘린더 조회
 
 - 사용자는 월/주 기준으로 등록된 이벤트를 볼 수 있어야 한다.
 - 사용자는 특정 날짜의 이벤트 상세를 확인할 수 있어야 한다.
 - 사용자는 이벤트 상태(active, paused)를 확인할 수 있어야 한다.
+- 사용자는 선택한 workspace 와 agent 기준으로 이벤트를 필터링할 수 있어야 한다.
 
 ### FR-3 이벤트 관리
 
@@ -31,8 +41,8 @@
 
 ### FR-5 Agent 실행 제어
 
-- 시스템은 이벤트별 허용 tool/MCP만 agent에 제공해야 한다.
-- 시스템은 실행 instruction, 이벤트 메타데이터, 허용 tool 목록을 agent context로 전달해야 한다.
+- 시스템은 이벤트별 허용 tool/MCP 만 agent 에 제공해야 한다.
+- 시스템은 실행 instruction, 이벤트 메타데이터, 허용 tool 목록을 agent context 로 전달해야 한다.
 - 시스템은 LangGraph 기반으로 실행 흐름을 구성해야 한다.
 
 ### FR-6 결과 기록
@@ -40,6 +50,7 @@
 - 시스템은 각 실행에 대해 상태를 저장해야 한다.
 - 시스템은 시작 시각, 종료 시각, 결과 요약, tool 사용 로그를 저장해야 한다.
 - 실패 시 오류 메시지를 저장해야 한다.
+- 실행 레코드는 `workspace_id`, `agent_id`, `event_id` 와 연결되어야 한다.
 
 ### FR-7 결과 조회 및 알림
 
@@ -47,12 +58,19 @@
 - 사용자는 특정 이벤트의 실행 이력을 조회할 수 있어야 한다.
 - 시스템은 결과를 지정된 채널로 전달할 수 있어야 한다.
 
+### FR-8 데스크톱 통신
+
+- 프런트엔드와 백엔드의 주 통신 프로토콜은 `gRPC` 여야 한다.
+- 프런트엔드는 Electron main process 를 통해 gRPC backend 와 통신해야 한다.
+- renderer 는 직접 백엔드에 접근하지 않고 preload/ipc 계층을 통해 main process 와 통신해야 한다.
+
 ## 2. 비기능 요구사항
 
 ### NFR-1 안정성
 
 - 예약된 작업은 서버 시간 기준으로 누락 없이 감지되어야 한다.
 - 동일 이벤트가 중복 실행되지 않도록 보호 장치가 필요하다.
+- 데스크톱 앱 재시작 이후에도 로컬 사용자 컨텍스트와 실행 상태를 복원할 수 있어야 한다.
 
 ### NFR-2 관찰 가능성
 
@@ -63,23 +81,47 @@
 
 - tool/MCP provider를 플러그인처럼 추가 가능해야 한다.
 - 향후 다중 사용자 지원이 가능하도록 모델이 확장 가능해야 한다.
+- gRPC contract 는 버전 관리 가능해야 한다.
 
 ### NFR-4 보안
 
 - 허용되지 않은 tool 호출은 차단되어야 한다.
 - 외부 API 키는 환경 변수로 관리해야 한다.
-- 민감한 실행 결과는 저장 정책을 명확히 해야 한다.
+- renderer 는 preload 에서 허용한 기능만 호출할 수 있어야 한다.
 
 ### NFR-5 개발 생산성
 
 - 백엔드는 `uv` 기반으로 재현 가능하게 세팅되어야 한다.
-- 프런트엔드는 `npm` 기반으로 독립 실행 가능해야 한다.
+- 프런트엔드는 Electron desktop app 기준으로 독립 실행 가능해야 한다.
 
 ## 3. 데이터 요구사항
+
+### User
+
+- `id`
+- `display_name`
+- `email`
+- `role`
+
+### Workspace
+
+- `id`
+- `user_id`
+- `name`
+- `timezone`
+
+### Agent
+
+- `id`
+- `workspace_id`
+- `name`
+- `description`
+- `status`
 
 ### Event
 
 - `id`
+- `agent_id`
 - `title`
 - `instruction`
 - `schedule_type`
@@ -96,6 +138,8 @@
 ### Execution
 
 - `id`
+- `workspace_id`
+- `agent_id`
 - `event_id`
 - `status`
 - `started_at`
@@ -104,19 +148,21 @@
 - `tool_results`
 - `error`
 
-## 4. API 초안
+## 4. gRPC 초안
 
-- `GET /api/events`
-- `POST /api/events`
-- `PATCH /api/events/{event_id}`
-- `DELETE /api/events/{event_id}`
-- `POST /api/events/{event_id}/run`
-- `POST /api/events/{event_id}/pause`
-- `POST /api/events/{event_id}/resume`
-- `GET /api/executions`
-- `GET /api/tools`
+- `ListWorkspaces`
+- `ListAgents`
+- `ListEvents`
+- `CreateEvent`
+- `UpdateEvent`
+- `DeleteEvent`
+- `RunEvent`
+- `PauseEvent`
+- `ResumeEvent`
+- `ListExecutions`
+- `ListTools`
 
 ## 5. 범위 경계
 
-- MVP는 단일 워크스페이스/단일 사용자 기준으로 정의한다.
+- MVP는 단일 로컬 사용자 데스크톱 앱 기준으로 정의한다.
 - MVP는 "실행 가능한 자동화 프레임"을 목표로 하며, 고도화된 planner 품질은 후순위다.

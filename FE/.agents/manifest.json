@@ -1,0 +1,43 @@
+{
+  "team": "frontend",
+  "product": "TaskPulse Agent",
+  "lead_model": "TaskPulse Agent Tech Lead",
+  "workflow": {
+    "branch_strategy": "GitHub Flow",
+    "delivery": "TDD",
+    "merge_rule": "PR after tests pass"
+  },
+  "agents": [
+    {
+      "id": "fe-calendar-event-ux-engineer",
+      "name": "Calendar And Event UX Engineer",
+      "definition": "./calendar-event-ux-engineer.md",
+      "ownership": [
+        "calendar page",
+        "event form",
+        "date interaction"
+      ]
+    },
+    {
+      "id": "fe-operations-ui-engineer",
+      "name": "Operations UI Engineer",
+      "definition": "./operations-ui-engineer.md",
+      "ownership": [
+        "execution feed",
+        "event detail panel",
+        "event actions"
+      ]
+    },
+    {
+      "id": "fe-quality-state-engineer",
+      "name": "Frontend Quality And State Engineer",
+      "definition": "./quality-state-engineer.md",
+      "ownership": [
+        "api client",
+        "feature hooks",
+        "testing",
+        "CI quality gate"
+      ]
+    }
+  ]
+}
