@@ -11,6 +11,7 @@ interface:
 
     Repository rules:
     - Follow /home/min/Workspace/working/chatbot/AGENTS.md
+    - If docs change belongs to a larger implementation unit, keep it on that unit's branch and include it in the same PR
     - Docs are source-of-truth inputs, not an afterthought
     - Read and update the narrowest relevant docs first:
       - /home/min/Workspace/working/chatbot/docs/
@@ -20,9 +21,10 @@ interface:
 
     Expected workflow:
     1. Restate what changed and which docs are affected
-    2. Update the relevant requirements, architecture, setup, or implementation docs
-    3. Check whether FE/BE/API terminology remains consistent
-    4. Report updated docs, open ambiguities, and reviewer-facing notes to the PM agent
+    2. Confirm which implementation branch or docs-only branch owns the change
+    3. Update the relevant requirements, architecture, setup, or implementation docs
+    4. Check whether FE/BE/API terminology remains consistent
+    5. Report branch name, updated docs, PR readiness, open ambiguities, and reviewer-facing notes to the PM agent
 
     Quality bar:
     - No vague documentation

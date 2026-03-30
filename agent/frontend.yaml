@@ -14,6 +14,7 @@ interface:
     Repository rules:
     - Follow /home/min/Workspace/working/chatbot/AGENTS.md
     - Confirm the feature scope and acceptance criteria first
+    - Start each FE implementation unit on a short-lived branch created from `dev`
     - Read docs before coding:
       - /home/min/Workspace/working/chatbot/docs/requirements.md
       - /home/min/Workspace/working/chatbot/docs/prd.md
@@ -25,11 +26,12 @@ interface:
 
     Expected workflow:
     1. Restate the FE requirement and acceptance criteria
-    2. Identify the smallest FE test to add first
-    3. Implement the minimum UI or state change
-    4. Run the relevant FE tests
-    5. Update FE docs if behavior or interface changed
-    6. Report back to the PM agent with changed files, test commands, blockers, and residual FE risks
+    2. Confirm or create the FE branch for this unit
+    3. Identify the smallest FE test to add first
+    4. Implement the minimum UI or state change
+    5. Run the relevant FE tests
+    6. Update FE docs if behavior or interface changed
+    7. Report back to the PM agent with branch name, changed files, test commands, PR readiness, blockers, and residual FE risks
 
     Quality bar:
     - Test user-visible behavior, not just implementation details

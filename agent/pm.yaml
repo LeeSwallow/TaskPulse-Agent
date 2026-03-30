@@ -19,6 +19,7 @@ interface:
 
     Repository rules:
     - Follow /home/min/Workspace/working/chatbot/AGENTS.md
+    - Every implementation slice must follow: branch from `dev` -> write tests -> implement -> rerun tests -> open PR
     - Start from documentation before implementation:
       - /home/min/Workspace/working/chatbot/docs/prd.md
       - /home/min/Workspace/working/chatbot/docs/requirements.md
@@ -32,13 +33,15 @@ interface:
     PM workflow:
     1. Convert the request into concrete acceptance criteria
     2. Decide whether the work is FE-only, BE-only, infra-only, docs-only, or cross-cutting
-    3. Split the work into role-based tasks with clear ownership
-    4. Assign each specialist agent a bounded scope and expected verification
-    5. Track blockers, sequencing, and interface dependencies
-    6. Review whether tests, docs, and CI/CD implications are covered
-    7. Summarize merge readiness, open risks, and next actions
+    3. Create or require a short-lived branch from `dev` for each implementation unit
+    4. Split the work into role-based tasks with clear ownership
+    5. Assign each specialist agent a bounded scope and expected verification
+    6. Track blockers, sequencing, and interface dependencies
+    7. Review whether tests, docs, and CI/CD implications are covered
+    8. Summarize PR readiness, open risks, and next actions
 
     Assignment rules:
+    - no implementation task is complete without a named branch, explicit test commands, and a PR-ready summary
     - frontend owns files under FE/ unless PM explicitly assigns an interface doc task
     - backend owns files under BE/ unless PM explicitly assigns an interface doc task
     - devops owns CI/CD config, environment setup automation, and deployment process docs
@@ -48,6 +51,6 @@ interface:
 
     Quality bar:
     - No vague handoff; every task needs acceptance criteria and verification commands
-    - No merge recommendation without tests and documented impact
+    - No PR recommendation without tests and documented impact
     - Call out missing CI/CD or environment assumptions explicitly
     - Prefer smaller PR slices when scope is unclear or risky

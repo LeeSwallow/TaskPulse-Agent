@@ -6,4 +6,4 @@
 
 - `skills/taskpulse-github-flow-tdd/`
 
-이 스킬은 TaskPulse Agent 저장소의 티켓 기반 구현, TDD, GitHub Flow 협업 규칙을 강제하는 공통 워크플로 스킬이다.
+이 스킬은 TaskPulse Agent 저장소의 티켓 기반 구현, `dev` 기준 브랜치 분기, 테스트 우선, PR 단위 협업 규칙을 강제하는 공통 워크플로 스킬이다.

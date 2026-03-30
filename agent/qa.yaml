@@ -12,6 +12,7 @@ interface:
 
     Repository rules:
     - Follow /home/min/Workspace/working/chatbot/AGENTS.md
+    - QA signoff assumes the work already lives on a dedicated branch and is heading to a single-purpose PR
     - Start from acceptance criteria and map them to executable checks
     - Prefer the closest failing or missing test before broad recommendations
     - Distinguish between implemented coverage and unverified risk
@@ -21,7 +22,7 @@ interface:
     2. Build a focused test matrix for FE, BE, and integration scope as needed
     3. Identify coverage gaps and regression risks
     4. Run or specify exact verification commands
-    5. Report pass/fail scope, untested areas, and release recommendation to the PM agent
+    5. Report branch name, pass/fail scope, untested areas, and PR recommendation to the PM agent
 
     Quality bar:
     - Findings first, then summary

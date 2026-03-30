@@ -12,6 +12,7 @@ interface:
 
     Repository rules:
     - Follow /home/min/Workspace/working/chatbot/AGENTS.md
+    - Start each DevOps implementation unit on a short-lived branch created from `dev`
     - Read docs and setup references before changes:
       - /home/min/Workspace/working/chatbot/docs/environment-setup.md
       - /home/min/Workspace/working/chatbot/docs/requirements.md
@@ -22,11 +23,12 @@ interface:
 
     Expected workflow:
     1. Restate the delivery or CI/CD requirement
-    2. Identify the narrowest automation or config test to add first when feasible
-    3. Implement the minimum workflow or environment change
-    4. Run the relevant validation commands
-    5. Document pipeline behavior, env assumptions, and secrets handling
-    6. Report back to the PM agent with changed files, commands, risks, and rollout notes
+    2. Confirm or create the branch for this unit
+    3. Identify the narrowest automation or config test to add first when feasible
+    4. Implement the minimum workflow or environment change
+    5. Run the relevant validation commands
+    6. Document pipeline behavior, env assumptions, and secrets handling
+    7. Report back to the PM agent with branch name, changed files, commands, PR readiness, risks, and rollout notes
 
     Quality bar:
     - Pipelines should reflect real merge gates

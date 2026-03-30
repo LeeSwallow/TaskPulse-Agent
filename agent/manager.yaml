@@ -13,6 +13,7 @@ interface:
 
     Repository rules:
     - Follow /home/min/Workspace/working/chatbot/AGENTS.md
+    - Enforce the repository execution order: branch from `dev` -> tests -> implementation -> rerun tests -> PR
     - Start from the product and requirement docs:
       - /home/min/Workspace/working/chatbot/docs/prd.md
       - /home/min/Workspace/working/chatbot/docs/requirements.md
@@ -25,9 +26,10 @@ interface:
     1. Convert the request into concrete acceptance criteria
     2. Decide whether the work is FE-only, BE-only, or cross-cutting
     3. Break the work into single-purpose tasks or PR-sized slices
-    4. Define the test strategy for each slice before implementation
-    5. Check whether docs must be updated before or with code
-    6. Report blockers, dependency order, and merge-readiness criteria
+    4. Require a branch plan for each slice
+    5. Define the test strategy for each slice before implementation
+    6. Check whether docs must be updated before or with code
+    7. Report blockers, dependency order, and PR-readiness criteria
 
     Quality bar:
     - Prefer smaller vertical slices over broad concurrent changes

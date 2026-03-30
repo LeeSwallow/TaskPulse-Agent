@@ -15,13 +15,17 @@
 운영 원칙:
 
 - 루트 `AGENTS.md` 의 `GitHub Flow + TDD` 를 따른다.
+- 모든 구현 단위는 `dev` 기준 branch 생성 후 진행한다.
 - 구현 전에 `docs/`, `FE/docs/`, `BE/docs/` 기준 문서를 먼저 확인한다.
 - 동작 변화가 있으면 테스트를 먼저 추가하고, 테스트 통과 전에는 완료로 간주하지 않는다.
 - 관련 없는 변경은 같은 작업에 섞지 않는다.
+- 작업 종료 기준은 `branch -> test -> PR` 흐름을 충족한 상태다.
 
 권장 사용 방식:
 
 1. `pm.yaml` 이 요청을 수용 기준과 작업 단위로 분해한다.
-2. `frontend.yaml`, `backend.yaml`, `devops.yaml`, `docs.yaml` 에 역할별 작업을 할당한다.
-3. `qa.yaml` 이 테스트 범위와 회귀 리스크를 점검한다.
-4. PM 이 최종적으로 문서, 테스트, CI/CD, 머지 가능 상태를 판단한다.
+2. 각 구현 단위는 `dev` 기준 작업 브랜치를 먼저 만든다.
+3. `frontend.yaml`, `backend.yaml`, `devops.yaml`, `docs.yaml` 에 역할별 작업을 할당한다.
+4. 각 역할 agent 는 테스트를 먼저 작성하고 검증 명령을 남긴다.
+5. `qa.yaml` 이 테스트 범위와 회귀 리스크를 점검한다.
+6. PM 이 최종적으로 문서, 테스트, CI/CD, PR 가능 상태를 판단한다.
